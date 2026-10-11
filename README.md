@@ -1,0 +1,177 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# PTLENKies
+
+<!-- badges: start -->
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version/PTLENKies)](https://CRAN.R-project.org/package=PTLENKies)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/PTLENKies)](https://CRAN.R-project.org/package=PTLENKies)
+[![License:
+GPL-2](https://img.shields.io/badge/License-GPL--2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
+<!-- badges: end -->
+
+**PTLENKies** provides statistical tools for the *Power Topp Leone
+Exponential Negative Kies Burr* (PTLENKBurr) distribution, a flexible
+seven-parameter distribution for positive data built on a Burr XII
+baseline. The package lets you:
+
+- evaluate the density, the cumulative distribution function and the
+  quantiles;
+- simulate random samples;
+- estimate the seven parameters by maximum likelihood;
+- plot the theoretical curves, with the mode and the median marked;
+- compare a fitted density with your data.
+
+## The distribution
+
+For $x > 0$, the cumulative distribution function is
+
+$$F(x; m, n, p, \lambda, \beta, c, k) =
+\exp\left( m\,n \left(1 - \frac{1}{K(x)^{p}}\right) \right)
+\left[\, 2 - \exp\left( n \left(1 - \frac{1}{K(x)^{p}}\right) \right) \right]^{m}$$
+
+where
+
+$$K(x) = 1 - \exp\left( -\lambda \left( \frac{1 - (1+x^{c})^{-k}}{(1+x^{c})^{-k}} \right)^{\beta} \right)$$
+
+and $m, n, p, \lambda, \beta, c, k > 0$. The parameters `c` and `k` are
+those of the Burr XII baseline.
+
+## Installation
+
+Install the released version from CRAN:
+
+``` r
+install.packages("PTLENKies")
+```
+
+Or the development version from GitHub:
+
+``` r
+# install.packages("pak")
+pak::pak("Otodji/PTLENKies")
+```
+
+## Functions
+
+| Function | Purpose |
+|:---|:---|
+| `P_PTLENKBurr(x, m, n, p, lambda, beta, c, k)` | Probability density function |
+| `C_PTLENKBurr(x, m, n, p, lambda, beta, c, k)` | Cumulative distribution function |
+| `Q_PTLENKBurr(u, m, n, p, lambda, beta, c, k)` | Quantiles for a vector of probabilities `u` |
+| `R_PTLENKBurr(n_samples, m, n, p, lambda, beta, c, k)` | Random sample of size `n_samples` |
+| `E_PTLENKBurr(data)` | Maximum likelihood estimation of the seven parameters |
+| `Sim_PTLENKBurr(data)` | Histogram of the data with the fitted density overlaid |
+| `Plot_PPTLENKBurr(m, n, p, lambda, beta, c, k)` | Plot of the density, with mode and median |
+| `Plot_CPTLENKBurr(m, n, p, lambda, beta, c, k)` | Plot of the cumulative distribution function, with median |
+
+The probability argument of the quantile function is named `u`, and the
+sample size of the random generator is named `n_samples`, because `p`
+and `n` are parameters of the distribution.
+
+The package also ships the dataset `GlassFibers`: breaking strengths of
+1.5 cm glass fibers measured at the UK National Physical Laboratory.
+
+## Examples
+
+``` r
+library(PTLENKies)
+```
+
+### Density, distribution function and quantiles
+
+``` r
+x <- c(0.5, 1.0, 1.5)
+
+# Density and cumulative probabilities
+P_PTLENKBurr(x, m = 1, n = 1, p = 1, lambda = 0.5, beta = 1.5, c = 2, k = 1)
+#> [1] 3.542693e-05 1.977328e+00 3.041824e-01
+C_PTLENKBurr(x, m = 1, n = 1, p = 1, lambda = 0.5, beta = 1.5, c = 2, k = 1)
+#> [1] 3.691507e-07 3.822999e-01 9.587699e-01
+
+# Quartiles
+Q_PTLENKBurr(u = c(0.25, 0.5, 0.75),
+             m = 1, n = 1, p = 1, lambda = 0.5, beta = 1.5, c = 2, k = 1)
+#> [1] 0.9312389 1.0601357 1.2133246
+```
+
+### Random samples
+
+``` r
+set.seed(123)
+sim_data <- R_PTLENKBurr(n_samples = 100,
+                         m = 1, n = 1, p = 1, lambda = 0.5, beta = 1.5, c = 2, k = 1)
+head(sim_data)
+#> [1] 0.9513949 1.2446528 1.0134882 1.3464558 1.4488376 0.7777750
+```
+
+### Plotting the density and the distribution function
+
+``` r
+Plot_PPTLENKBurr(m = 1, n = 1, p = 1, lambda = 0.5, beta = 1.5, c = 2, k = 1)
+```
+
+<img src="man/figures/README-pdf-plot-1.png" alt="" width="100%" />
+
+``` r
+Plot_CPTLENKBurr(m = 1, n = 1, p = 1, lambda = 0.5, beta = 1.5, c = 2, k = 1)
+```
+
+<img src="man/figures/README-cdf-plot-1.png" alt="" width="100%" />
+
+### Fitting the distribution to data
+
+`E_PTLENKBurr()` returns the maximum likelihood estimates as a named
+vector.
+
+``` r
+data(GlassFibers)
+
+E_PTLENKBurr(GlassFibers)
+#>            m            n            p       lambda         beta            c 
+#>   0.66034955 166.13384622   0.01840540  19.79164556   4.82830738   3.67202817 
+#>            k 
+#>   0.06630026
+```
+
+`Sim_PTLENKBurr()` draws the histogram of the data and overlays the
+fitted density:
+
+``` r
+Sim_PTLENKBurr(GlassFibers)
+```
+
+<img src="man/figures/README-fit-plot-1.png" alt="" width="100%" />
+
+## References
+
+If you use this package, please cite the related articles:
+
+- Atchadé, M. N., Otodji, T., & Djibril, A. (2024).
+  <https://doi.org/10.1063/5.0179458>
+- Atchadé, M. N., Otodji, T., Djibril, A., & N’bouké, M. (2023).
+  <https://doi.org/10.1515/phys-2023-0151>
+
+The citation of the package itself is given by:
+
+``` r
+citation("PTLENKies")
+```
+
+## Authors
+
+- Mintodê Nicodème Atchadé
+- Théophile Otodji (maintainer) — [ORCID
+  0009-0003-0389-9007](https://orcid.org/0009-0003-0389-9007)
+
+## Bug reports
+
+Please report bugs and suggestions on the [issue
+tracker](https://github.com/Otodji/PTLENKies/issues).
+
+## License
+
+GPL-2

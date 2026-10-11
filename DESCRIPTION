@@ -1,0 +1,25 @@
+Package: PTLENKies
+Type: Package
+Title: Computation of PTLENKies Distribution Properties
+Version: 0.1.0
+Authors@R: c( 
+  person("Mintodê Nicodème","Atchadé", role=c("aut"), email="nickpowerabc@gmail.com"),
+  person("Théophile","Otodji", role=c("aut","cre"), email="otodjitheodule@gmail.com")
+  )
+Author: Mintodê Nicodème Atchadé [aut],
+  Théophile Otodji [aut, cre]
+Maintainer: Théophile Otodji <otodjitheodule@gmail.com>
+Description: Implements statistical tools for analyzing, simulating, and computing properties of the Power Topp Leone Exponential Negative Kies Burr (PTLENKBurr). See Atchadé M, Otodji T, and Djibril A (2024) <doi:10.1063/5.0179458> and Atchadé M, Otodji T, Djibril A, and N'bouké M (2023) <doi:10.1515/phys-2023-0151> for details.
+Depends: R (>= 4.1.0)
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
+Language: en
+Config/roxygen2/version: 8.0.0
+Imports: graphics, stats
+Config/testthat/edition: 3
+NeedsCompilation: no
+Packaged: 2026-08-04 08:54:43 UTC; Théophile OTODJI
+Repository: CRAN
+Date/Publication: 2026-09-03 11:50:47 UTC
